@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — Shivam Kushwaha</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #0a0a0a;
+    color: #f0f0f0;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+
+  /* ---- LOGIN ---- */
+  #loginScreen {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 20px;
+    padding: 40px 32px;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+    box-shadow: 0 0 60px #ff6b0020;
+  }
+  #loginScreen h1 { font-size: 1.5rem; margin-bottom: 6px; }
+  #loginScreen p { color: #888; font-size: 0.85rem; margin-bottom: 28px; }
+  .inp {
+    width: 100%;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: #fff;
+    font-size: 0.95rem;
+    margin-bottom: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .inp:focus { border-color: #ff6b00; }
+  .btn {
+    width: 100%;
+    background: linear-gradient(135deg, #ff6b00, #ff9500);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 13px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .btn:hover { opacity: 0.9; }
+  .err { color: #ff4444; font-size: 0.8rem; margin-top: 10px; display:none; }
+
+  /* ---- ADMIN PANEL ---- */
+  #adminPanel { display:none; width:100%; max-width: 500px; }
+  .panel-header {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+  .panel-header h2 { font-size: 1.1rem; }
+  .panel-header span { color: #888; font-size: 0.75rem; }
+  .logout-btn {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: #aaa;
+    font-size: 0.75rem;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .card {
+    background: #111;
+    border: 1px solid #1e1e1e;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .card h3 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #ff6b00;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+  }
+
+  .photo-row {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .photo-row:last-child { border:none; margin:0; padding:0; }
+  .photo-thumb {
+    width: 50px; height: 50px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 2px solid #2a2a2a;
+    flex-shrink: 0;
+  }
+  .photo-info { flex:1; }
+  .photo-info label { font-size: 0.78rem; color: #888; display:block; margin-bottom: 4px; }
+  .photo-info .inp { margin-bottom:0; font-size:0.8rem; padding: 8px 12px; }
+  .save-single {
+    background: #00e67620;
+    border: 1px solid #00e676;
+    color: #00e676;
+    font-size: 0.75rem;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .save-single:hover { background: #00e67630; }
+
+  .wa-row { display:flex; gap:10px; align-items:center; }
+  .wa-row .inp { margin:0; flex:1; }
+  .wa-btn {
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .success-msg {
+    background: #00e67615;
+    border: 1px solid #00e676;
+    color: #00e676;
+    font-size: 0.8rem;
+    padding: 10px 16px;
+    border-radius: 10px;
+    margin-top: 10px;
+    display: none;
+    text-align: center;
+  }
+
+  .imgbb-info {
+    background: #1a1a1a;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 0.78rem;
+    color: #888;
+    margin-top: 14px;
+    line-height: 1.7;
+  }
+  .imgbb-info a { color: #ff6b00; }
+  .imgbb-info code {
+    background: #2a2a2a;
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <h1>🔐 Admin Panel</h1>
+  <p>Shivam Kushwaha — Website Manager</p>
+  <input type="password" class="inp" id="pwdInput" placeholder="Password daalo..." onkeydown="if(event.key==='Enter') doLogin()">
+  <button class="btn" onclick="doLogin()">Login</button>
+  <div class="err" id="errMsg">❌ Wrong password! Try again.</div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel">
+
+  <div class="panel-header">
+    <div>
+      <h2>⚙️ Admin Panel</h2>
+      <span>Photos & WhatsApp manage karo</span>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">Logout</button>
+  </div>
+
+  <!-- PHOTOS CARD -->
+  <div class="card">
+    <h3>📸 Photos Update Karo (imgbb.com link)</h3>
+
+    <!-- Profile -->
+    <div class="photo-row">
+      <img src="" class="photo-thumb" id="prev_profile" onerror="this.src='https://via.placeholder.com/50x50/1a1a1a/888?text=P'">
+      <div class="photo-info">
+        <label>Profile Photo (ss.png)</label>
+        <input type="url" class="inp" id="inp_profile" placeholder="https://i.ibb.co/...">
+      </div>
+      <button class="save-single" onclick="savePhoto('profile')">Save</button>
+    </div>
+
+    <!-- Student 1 Avatar -->
+    <div class="photo-row">
+      <img src="" class="photo-thumb" id="prev_r1" onerror="this.src='https://via.placeholder.com/50x50/1a1a1a/888?text=S'">
+      <div class="photo-info">
+        <label>Student 1 Avatar (shivam.png)</label>
+        <input type="url" class="inp" id="inp_r1" placeholder="https://i.ibb.co/...">
+      </div>
+      <button class="save-single" onclick="savePhoto('r1')">Save</button>
+    </div>
+
+    <!-- Student 1 Screenshot -->
+    <div class="photo-row">
+      <img src="" class="photo-thumb" id="prev_r1ss" onerror="this.src='https://via.placeholder.com/50x50/1a1a1a/888?text=SS'">
+      <div class="photo-info">
+        <label>Student 1 Screenshot (arun.png)</label>
+        <input type="url" class="inp" id="inp_r1ss" placeholder="https://i.ibb.co/...">
+      </div>
+      <button class="save-single" onclick="savePhoto('r1ss')">Save</button>
+    </div>
+
+    <!-- Student 2 Avatar -->
+    <div class="photo-row">
+      <img src="" class="photo-thumb" id="prev_r2" onerror="this.src='https://via.placeholder.com/50x50/1a1a1a/888?text=S2'">
+      <div class="photo-info">
+        <label>Student 2 Avatar (sk.png)</label>
+        <input type="url" class="inp" id="inp_r2" placeholder="https://i.ibb.co/...">
+      </div>
+      <button class="save-single" onclick="savePhoto('r2')">Save</button>
+    </div>
+
+    <!-- Student 2 Screenshot -->
+    <div class="photo-row">
+      <img src="" class="photo-thumb" id="prev_r2ss" onerror="this.src='https://via.placeholder.com/50x50/1a1a1a/888?text=SS2'">
+      <div class="photo-info">
+        <label>Student 2 Screenshot (ram.png)</label>
+        <input type="url" class="inp" id="inp_r2ss" placeholder="https://i.ibb.co/...">
+      </div>
+      <button class="save-single" onclick="savePhoto('r2ss')">Save</button>
+    </div>
+
+    <div class="imgbb-info">
+      📌 <strong>Photo upload kaise karein:</strong><br>
+      1. <a href="https://imgbb.com" target="_blank">imgbb.com</a> pe jaao<br>
+      2. Photo upload karo (free hai)<br>
+      3. <code>Direct link</code> copy karo (ends with .jpg/.png)<br>
+      4. Yahan paste karo aur Save karo
+    </div>
+  </div>
+
+  <!-- WHATSAPP CARD -->
+  <div class="card">
+    <h3>💬 WhatsApp Number</h3>
+    <p style="font-size:0.78rem;color:#888;margin-bottom:12px;">Country code ke saath daalo, bina + ke. Eg: <code style="background:#1a1a1a;padding:1px 5px;border-radius:4px;">919876543210</code></p>
+    <div class="wa-row">
+      <input type="text" class="inp" id="waInp" placeholder="919876543210...">
+      <button class="wa-btn" onclick="saveWA()">💾 Save</button>
+    </div>
+    <div class="success-msg" id="waSuccess">✅ WhatsApp number save ho gaya!</div>
+  </div>
+
+  <div class="success-msg" id="globalSuccess" style="display:none; margin-top:4px; font-size:0.85rem;">✅ Change save ho gaya! Page refresh karo.</div>
+</div>
+
+<script>
+const PASS = 'shivam@12345';
+const keyMap = {
+  profile: 'photo_profile',
+  r1:      'photo_r1',
+  r1ss:    'photo_r1ss',
+  r2:      'photo_r2',
+  r2ss:    'photo_r2ss',
+};
+
+function doLogin() {
+  const val = document.getElementById('pwdInput').value;
+  if(val === PASS) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    loadValues();
+  } else {
+    document.getElementById('errMsg').style.display = 'block';
+  }
+}
+
+function doLogout() {
+  document.getElementById('adminPanel').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'block';
+  document.getElementById('pwdInput').value = '';
+}
+
+function loadValues() {
+  Object.entries(keyMap).forEach(([id, key]) => {
+    const val = localStorage.getItem(key) || '';
+    document.getElementById('inp_' + id).value = val;
+    if(val) document.getElementById('prev_' + id).src = val;
+  });
+  const waNum = localStorage.getItem('wa_number') || '';
+  document.getElementById('waInp').value = waNum;
+}
+
+function savePhoto(id) {
+  const url = document.getElementById('inp_' + id).value.trim();
+  if(!url) return alert('Pehle link daalo!');
+  localStorage.setItem(keyMap[id], url);
+  document.getElementById('prev_' + id).src = url;
+  const gs = document.getElementById('globalSuccess');
+  gs.style.display = 'block';
+  setTimeout(() => gs.style.display = 'none', 3000);
+}
+
+function saveWA() {
+  const num = document.getElementById('waInp').value.trim();
+  if(!num) return alert('Number daalo!');
+  localStorage.setItem('wa_number', num);
+  const s = document.getElementById('waSuccess');
+  s.style.display = 'block';
+  setTimeout(() => s.style.display = 'none', 3000);
+}
+</script>
+</body>
+</html>
