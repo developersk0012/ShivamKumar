@@ -37,12 +37,89 @@
                 repeating-linear-gradient(90deg, transparent, transparent 49px, #ffffff05 50px);
   }
 
+  /* ---- HAMBURGER NAV ---- */
+  .nav-btn {
+    position: fixed; top: 18px; right: 18px; z-index: 1000;
+    width: 48px; height: 48px;
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+    cursor: pointer;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 20px #00000060;
+  }
+  .nav-btn:hover { border-color: var(--orange); box-shadow: 0 0 20px #ff6b0030; }
+  .nav-btn span {
+    display: block; width: 22px; height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: all 0.35s cubic-bezier(0.77,0,0.18,1);
+  }
+  .nav-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .nav-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* Overlay */
+  .menu-overlay {
+    position: fixed; inset:0; z-index:998;
+    background: #00000085;
+    backdrop-filter: blur(4px);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+  .menu-overlay.open { opacity:1; pointer-events:all; }
+
+  /* Slide-in Menu */
+  .side-menu {
+    position: fixed; top:0; right:-100%; width: 275px; height:100vh;
+    background: #0e0e0e;
+    border-left: 1px solid #1e1e1e;
+    z-index: 999;
+    padding: 80px 24px 40px;
+    transition: right 0.4s cubic-bezier(0.77,0,0.18,1);
+    display: flex; flex-direction: column; gap: 6px;
+    box-shadow: -20px 0 60px #00000080;
+  }
+  .side-menu.open { right: 0; }
+
+  .menu-section-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #444;
+    text-transform: uppercase;
+    margin: 18px 0 6px 4px;
+  }
+  .menu-section-label:first-of-type { margin-top: 0; }
+
+  .menu-item {
+    display: flex; align-items: center; gap: 13px;
+    padding: 13px 16px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 0.92rem;
+    font-weight: 500;
+    transition: background 0.2s, transform 0.2s, border-color 0.2s;
+    border: 1px solid transparent;
+  }
+  .menu-item:hover {
+    background: #1a1a1a;
+    border-color: #2a2a2a;
+    transform: translateX(5px);
+  }
+  .menu-item.wa { color: #25D366; }
+  .menu-item.insta { color: #e1306c; }
+  .menu-item.fb { color: #1877f2; }
+  .menu-icon { font-size: 1.2rem; width: 22px; text-align:center; flex-shrink:0; }
+
   /* ---- HERO ---- */
   .hero {
     position: relative; z-index:1;
     min-height: 100vh;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 40px 20px;
+    padding: 60px 20px 40px;
     text-align: center;
   }
 
@@ -120,10 +197,7 @@
   }
   .profile-name span { color: var(--green); }
 
-  .requirements {
-    margin: 20px 0;
-    text-align: left;
-  }
+  .requirements { margin: 20px 0; text-align: left; }
   .requirements p { font-size: 0.78rem; color: #888; margin-bottom: 8px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
   .req-item {
     display: flex; align-items: center; gap: 10px;
@@ -152,17 +226,32 @@
     text-align: center;
     animation: fadeUp 0.8s ease 0.4s both;
   }
-  .serious-banner h2 {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--orange);
-  }
+  .serious-banner h2 { font-size: 1.2rem; font-weight: 700; color: var(--orange); }
   .serious-banner p { font-size: 0.8rem; color: #aaa; margin-top: 6px; }
+
+  /* ---- MARQUEE ---- */
+  .marquee-wrap {
+    position: relative; z-index:1;
+    overflow: hidden;
+    background: #111;
+    border-top: 1px solid #222; border-bottom: 1px solid #222;
+    padding: 14px 0;
+    margin: 40px 0;
+  }
+  .marquee-track {
+    display: flex; gap: 40px;
+    white-space: nowrap;
+    animation: marquee 30s linear infinite;
+    font-size: 0.85rem;
+    color: #888;
+    font-weight: 600;
+  }
+  .marquee-track span { color: var(--orange); }
 
   /* ---- RESULTS SECTION ---- */
   .section {
     position: relative; z-index:1;
-    padding: 60px 20px;
+    padding: 60px 20px 10px;
     max-width: 420px;
     margin: 0 auto;
   }
@@ -189,7 +278,6 @@
     margin-bottom: 20px;
     position: relative;
     overflow: hidden;
-    animation: fadeUp 0.5s ease both;
     transition: transform 0.3s, box-shadow 0.3s;
   }
   .result-card:hover {
@@ -210,6 +298,9 @@
     border: 1px solid var(--green);
   }
 
+  /* Hidden extra cards */
+  .extra-card { display: none; }
+
   .result-header {
     display: flex; align-items: center; gap: 12px;
     margin-bottom: 14px;
@@ -219,6 +310,10 @@
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid var(--orange);
+    background: #1a1a1a;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
   }
   .result-meta h4 { font-size: 1rem; font-weight: 700; }
   .result-meta p { font-size: 0.75rem; color: #888; }
@@ -228,7 +323,8 @@
     border: 1px solid #2a2a2a;
     margin-top: 8px;
     object-fit: cover;
-    max-height: 200px;
+    max-height: 220px;
+    display: block;
   }
 
   .earning-badge {
@@ -236,31 +332,62 @@
     background: linear-gradient(135deg, #00e67620, #00e67610);
     border: 1px solid var(--green);
     color: var(--green);
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 700;
     padding: 6px 14px;
     border-radius: 10px;
     margin-top: 10px;
   }
 
-  /* ---- MARQUEE ---- */
-  .marquee-wrap {
+  /* ---- VIEW MORE ---- */
+  .view-more-wrap {
     position: relative; z-index:1;
-    overflow: hidden;
-    background: #111;
-    border-top: 1px solid #222; border-bottom: 1px solid #222;
-    padding: 14px 0;
-    margin: 40px 0;
+    text-align: center;
+    padding: 10px 20px 40px;
+    max-width: 420px;
+    margin: 0 auto;
   }
-  .marquee-track {
-    display: flex; gap: 40px;
-    white-space: nowrap;
-    animation: marquee 18s linear infinite;
-    font-size: 0.85rem;
-    color: #888;
-    font-weight: 600;
+  .view-more-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: transparent;
+    border: 2px solid var(--orange);
+    color: var(--orange);
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 14px 34px;
+    border-radius: 50px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.3s, color 0.3s, transform 0.2s, box-shadow 0.3s;
+    animation: pulse-border 2s ease-in-out infinite;
   }
-  .marquee-track span { color: var(--orange); }
+  .view-more-btn:hover {
+    background: var(--orange);
+    color: #fff;
+    transform: scale(1.04);
+    box-shadow: 0 8px 30px #ff6b0050;
+    animation: none;
+  }
+
+  @keyframes pulse-border {
+    0%,100% { box-shadow: 0 0 0 0 #ff6b0040; }
+    50%      { box-shadow: 0 0 0 8px #ff6b0000; }
+  }
+
+  /* ---- NO EXPERIENCE ---- */
+  .no-exp {
+    position: relative; z-index:1;
+    text-align: center;
+    padding: 0 20px 60px;
+  }
+  .no-exp h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gold);
+    text-shadow: 0 0 30px #ffd70060;
+  }
+  .no-exp p { color: #888; font-size: 0.9rem; margin-top: 8px; }
 
   /* ---- CTA BUTTON ---- */
   .cta-wrap {
@@ -278,7 +405,7 @@
     border-radius: 60px;
     text-decoration: none;
     box-shadow: 0 8px 40px #25D36650;
-    animation: pulse-btn 2s ease-in-out infinite, fadeUp 0.8s ease 0.5s both;
+    animation: pulse-btn 2s ease-in-out infinite;
     transition: transform 0.2s;
     max-width: 340px;
     width: 100%;
@@ -286,21 +413,6 @@
   }
   .cta-btn:hover { transform: scale(1.03); }
   .cta-btn svg { width:24px; height:24px; fill:#fff; flex-shrink:0; }
-
-  /* ---- NO EXPERIENCE ---- */
-  .no-exp {
-    position: relative; z-index:1;
-    text-align: center;
-    padding: 0 20px 60px;
-  }
-  .no-exp h2 {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--gold);
-    text-shadow: 0 0 30px #ffd70060;
-  }
-  .no-exp p { color: #888; font-size: 0.9rem; margin-top: 8px; }
 
   /* ---- FOOTER ---- */
   footer {
@@ -347,6 +459,30 @@
 
 <div class="bg-anim"></div>
 
+<!-- HAMBURGER BUTTON -->
+<button class="nav-btn" id="navBtn" onclick="toggleMenu()">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- OVERLAY -->
+<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+
+<!-- SIDE MENU -->
+<div class="side-menu" id="sideMenu">
+  <div class="menu-section-label">📞 Contact</div>
+  <a href="https://wa.me/+917050437469" class="menu-item wa" target="_blank">
+    <span class="menu-icon">💬</span> Contact Us
+  </a>
+
+  <div class="menu-section-label">🌐 Follow Us</div>
+  <a href="YOUR_INSTAGRAM_LINK_HERE" class="menu-item insta" target="_blank" id="instaLink">
+    <span class="menu-icon">📸</span> Follow on Instagram
+  </a>
+  <a href="YOUR_FACEBOOK_LINK_HERE" class="menu-item fb" target="_blank" id="fbLink">
+    <span class="menu-icon">👍</span> Follow on Facebook
+  </a>
+</div>
+
 <!-- HERO -->
 <section class="hero">
   <div class="badge">🔥 Limited Seats Available</div>
@@ -356,7 +492,7 @@
   <!-- Profile Card -->
   <div class="profile-card">
     <div class="profile-img-wrap">
-      <img src="ss.png" alt="Shivam Kushwaha" id="profileImg">
+      <img src="https://i.ibb.co/RkY1yc8d/IMG-20260328-WA0011.jpg" alt="Shivam Kushwaha">
     </div>
     <div class="profile-name">My Self <span>Shivam Kushwaha</span> ✅</div>
     <p style="font-size:0.85rem;color:#888;margin-bottom:8px;">I am ready to Guide you!</p>
@@ -374,15 +510,21 @@
   </div>
 </section>
 
-<!-- MARQUEE -->
+<!-- MARQUEE — All 5 students -->
 <div class="marquee-wrap">
   <div class="marquee-track">
-    <span>🔥 Aditya Kumar r</span> ne ₹11100 kamaye &nbsp;|&nbsp;
-    <span>✅ Riya Tripathi</span> ne Monthly income₹42,000 kamaye &nbsp;|&nbsp;
-    <span>💰 Real Results</span> Real Students Real Earning &nbsp;|&nbsp;
     <span>🔥 Aditya Kumar</span> ne ₹11,100 kamaye &nbsp;|&nbsp;
-    <span>✅ Riya Tripathi</span> ka Monthly Income₹42,000 kamaye &nbsp;|&nbsp;
-    <span>💰 Real Results</span> Real Students Real Earning &nbsp;|&nbsp;
+    <span>✅ Riya Tripathi</span> ka Monthly Income ₹42,000 &nbsp;|&nbsp;
+    <span>💰 Aman</span> ne ₹67,166 kamaye &nbsp;|&nbsp;
+    <span>🌟 Surya</span> ne ≈₹71,000 kamaye &nbsp;|&nbsp;
+    <span>🚀 Subham</span> ne ₹76,800 kamaye &nbsp;|&nbsp;
+    <span>💎 Real Results</span> Real Students Real Earning &nbsp;|&nbsp;
+    <span>🔥 Aditya Kumar</span> ne ₹11,100 kamaye &nbsp;|&nbsp;
+    <span>✅ Riya Tripathi</span> ka Monthly Income ₹42,000 &nbsp;|&nbsp;
+    <span>💰 Aman</span> ne ₹67,166 kamaye &nbsp;|&nbsp;
+    <span>🌟 Surya</span> ne ≈₹71,000 kamaye &nbsp;|&nbsp;
+    <span>🚀 Subham</span> ne ₹76,800 kamaye &nbsp;|&nbsp;
+    <span>💎 Real Results</span> Real Students Real Earning &nbsp;|&nbsp;
   </div>
 </div>
 
@@ -391,32 +533,79 @@
   <div class="section-title">Students ke <span>Results</span></div>
   <div class="section-sub">In logon ne khud try karke results nikale — koi experience nahi tha</div>
 
-  <!-- Result Card 1 -->
+  <!-- Card 1: Aditya -->
   <div class="result-card reveal">
     <div class="result-header">
-      <img src="shivam.png" alt="Student 1" class="result-avatar" id="r1img">
+      <div class="result-avatar">🧑</div>
       <div class="result-meta">
         <h4>Aditya Kumar</h4>
         <p>Master Package Member</p>
       </div>
     </div>
-    <img src="arun.png" alt="Screenshot 1" class="result-ss" id="r1ss">
-    <div class="earning-badge">💰 ₹11,100+ Earn Kiya</div>
+    <img src="https://i.ibb.co/WW4CWtVq/IMG-20260328-WA0024.jpg" alt="Aditya Screenshot" class="result-ss">
+    <div class="earning-badge">💰 ₹11,100 Earn Kiya</div>
   </div>
 
-  <!-- Result Card 2 -->
+  <!-- Card 2: Riya -->
   <div class="result-card reveal">
     <div class="result-header">
-      <img src="sk.png" alt="Student 2" class="result-avatar" id="r2img">
+      <div class="result-avatar">👩</div>
       <div class="result-meta">
         <h4>Riya Tripathi</h4>
         <p>Regular Member</p>
       </div>
     </div>
-    <img src="ram.png" alt="Screenshot 2" class="result-ss" id="r2ss">
-    <div class="earning-badge">💰 ₹42000 Monthly income</div>
+    <img src="https://i.ibb.co/tpY4Qgbr/IMG-20260328-WA0014.jpg" alt="Riya Screenshot" class="result-ss">
+    <div class="earning-badge">💰 ₹42,000 Monthly Income</div>
+  </div>
+
+  <!-- Card 3: Aman (hidden) -->
+  <div class="result-card extra-card reveal">
+    <div class="result-header">
+      <div class="result-avatar">🧑</div>
+      <div class="result-meta">
+        <h4>Aman</h4>
+        <p>Premium Member</p>
+      </div>
+    </div>
+    <img src="https://i.ibb.co/jqJw8Fh/IMG-20260328-WA0020.jpg" alt="Aman Screenshot" class="result-ss">
+    <div class="earning-badge">💰 ₹67,166 Earn Kiya</div>
+  </div>
+
+  <!-- Card 4: Surya (hidden) -->
+  <div class="result-card extra-card reveal">
+    <div class="result-header">
+      <div class="result-avatar">☀️</div>
+      <div class="result-meta">
+        <h4>Surya</h4>
+        <p>Premium Member</p>
+      </div>
+    </div>
+    <img src="https://i.ibb.co/p61rBhvV/IMG-20260328-WA0023.jpg" alt="Surya Screenshot" class="result-ss">
+    <div class="earning-badge">💰 ≈₹71,000 Earn Kiya</div>
+  </div>
+
+  <!-- Card 5: Subham (hidden) -->
+  <div class="result-card extra-card reveal">
+    <div class="result-header">
+      <div class="result-avatar">🙋</div>
+      <div class="result-meta">
+        <h4>Subham</h4>
+        <p>Premium Member</p>
+      </div>
+    </div>
+    <img src="https://i.ibb.co/39nztwQ3/IMG-20260328-WA0017.jpg" alt="Subham Screenshot" class="result-ss">
+    <div class="earning-badge">💰 ₹76,800 Earn Kiya</div>
   </div>
 </section>
+
+<!-- VIEW MORE BUTTON -->
+<div class="view-more-wrap reveal">
+  <a href="https://drive.google.com/file/d/178TFiDktJ7_4ZW8dDIK8qe4V4mN15Em4/view?usp=drivesdk"
+     class="view-more-btn" id="viewMoreBtn" target="_blank">
+    📂 View More Results &rarr;
+  </a>
+</div>
 
 <!-- NO EXPERIENCE -->
 <div class="no-exp reveal">
@@ -426,7 +615,7 @@
 
 <!-- CTA -->
 <div class="cta-wrap reveal">
-  <a href="https://wa.me/+917050437469" class="cta-btn" id="waBtn" target="_blank">
+  <a href="https://wa.me/+917050437469" class="cta-btn" target="_blank">
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
     </svg>
@@ -441,29 +630,35 @@
 
 <script>
 // Scroll reveal
-const reveals = document.querySelectorAll('.reveal');
 const obs = new IntersectionObserver((entries) => {
   entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.15 });
-reveals.forEach(r => obs.observe(r));
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
 
-// Load dynamic photos from localStorage (set by admin panel)
-const photoMap = {
-  profileImg: 'photo_profile',
-  r1img: 'photo_r1',
-  r1ss: 'photo_r1ss',
-  r2img: 'photo_r2',
-  r2ss: 'photo_r2ss',
-};
-Object.entries(photoMap).forEach(([id, key]) => {
-  const val = localStorage.getItem(key);
-  if(val) document.getElementById(id).src = val;
+// Hamburger menu
+function toggleMenu() {
+  document.getElementById('navBtn').classList.toggle('open');
+  document.getElementById('sideMenu').classList.toggle('open');
+  document.getElementById('menuOverlay').classList.toggle('open');
+}
+
+// View More logic: first click shows remaining 3 cards, second click opens PDF
+let extraShown = false;
+document.getElementById('viewMoreBtn').addEventListener('click', function(e) {
+  if (!extraShown) {
+    e.preventDefault();
+    extraShown = true;
+    document.querySelectorAll('.extra-card').forEach(c => {
+      c.style.display = 'block';
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => c.classList.add('visible'));
+      });
+      obs.observe(c);
+    });
+    this.innerHTML = '📄 View Full PDF Results &rarr;';
+  }
+  // second click opens PDF naturally via href
 });
-
-// WhatsApp number
-const waNum = localStorage.getItem('wa_number');
-if(waNum) document.getElementById('waBtn').href = 'https://wa.me/' + waNum;
 </script>
 </body>
-  </html>
-        
+</html>
