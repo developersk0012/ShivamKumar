@@ -1,664 +1,1841 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shivam Kushwaha - Earn Online</title>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --orange: #ff6b00;
-    --green: #00e676;
-    --dark: #0a0a0a;
-    --card: #111111;
-    --gold: #ffd700;
-    --text: #f0f0f0;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: var(--dark);
-    color: var(--text);
-    overflow-x: hidden;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0ea5e9;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --sidebar-width: 280px;
 
-  /* ---- ANIMATED BG ---- */
-  .bg-anim {
-    position: fixed; top:0; left:0; width:100%; height:100%; z-index:0;
-    background: radial-gradient(ellipse at 20% 50%, #ff6b0015 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 20%, #00e67615 0%, transparent 60%);
-    pointer-events: none;
-  }
-  .bg-anim::after {
-    content:'';
-    position:absolute; inset:0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 49px, #ffffff05 50px),
-                repeating-linear-gradient(90deg, transparent, transparent 49px, #ffffff05 50px);
-  }
+            /* Dark mode variables */
+            --dark-bg: #0f172a;
+            --dark-card: #1e293b;
+            --dark-text: #f1f5f9;
+            --dark-text-light: #94a3b8;
+            --dark-border: #334155;
+        }
 
-  /* ---- HAMBURGER NAV ---- */
-  .nav-btn {
-    position: fixed; top: 18px; right: 18px; z-index: 1000;
-    width: 48px; height: 48px;
-    background: #111;
-    border: 1px solid #2a2a2a;
-    border-radius: 12px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
-    cursor: pointer;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    box-shadow: 0 4px 20px #00000060;
-  }
-  .nav-btn:hover { border-color: var(--orange); box-shadow: 0 0 20px #ff6b0030; }
-  .nav-btn span {
-    display: block; width: 22px; height: 2px;
-    background: var(--text);
-    border-radius: 2px;
-    transition: all 0.35s cubic-bezier(0.77,0,0.18,1);
-  }
-  .nav-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-  .nav-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-  .nav-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            font-size: 16px;
+        }
 
-  /* Overlay */
-  .menu-overlay {
-    position: fixed; inset:0; z-index:998;
-    background: #00000085;
-    backdrop-filter: blur(4px);
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.35s ease;
-  }
-  .menu-overlay.open { opacity:1; pointer-events:all; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: all 0.3s ease;
+            min-height: 100vh;
+        }
 
-  /* Slide-in Menu */
-  .side-menu {
-    position: fixed; top:0; right:-100%; width: 275px; height:100vh;
-    background: #0e0e0e;
-    border-left: 1px solid #1e1e1e;
-    z-index: 999;
-    padding: 80px 24px 40px;
-    transition: right 0.4s cubic-bezier(0.77,0,0.18,1);
-    display: flex; flex-direction: column; gap: 6px;
-    box-shadow: -20px 0 60px #00000080;
-  }
-  .side-menu.open { right: 0; }
+        body.dark-mode {
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+        }
 
-  .menu-section-label {
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: #444;
-    text-transform: uppercase;
-    margin: 18px 0 6px 4px;
-  }
-  .menu-section-label:first-of-type { margin-top: 0; }
+        .container {
+            display: flex;
+            min-height: calc(100vh - 60px);
+            padding: 1rem;
+            margin-top: 60px;
+        }
 
-  .menu-item {
-    display: flex; align-items: center; gap: 13px;
-    padding: 13px 16px;
-    border-radius: 12px;
-    text-decoration: none;
-    color: var(--text);
-    font-size: 0.92rem;
-    font-weight: 500;
-    transition: background 0.2s, transform 0.2s, border-color 0.2s;
-    border: 1px solid transparent;
-  }
-  .menu-item:hover {
-    background: #1a1a1a;
-    border-color: #2a2a2a;
-    transform: translateX(5px);
-  }
-  .menu-item.wa { color: #25D366; }
-  .menu-item.insta { color: #e1306c; }
-  .menu-item.fb { color: #1877f2; }
-  .menu-icon { font-size: 1.2rem; width: 22px; text-align:center; flex-shrink:0; }
+        /* Header Styles */
+        .test-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-bottom: 1px solid var(--border);
+            height: 60px;
+        }
 
-  /* ---- HERO ---- */
-  .hero {
-    position: relative; z-index:1;
-    min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 60px 20px 40px;
-    text-align: center;
-  }
+        .dark-mode .test-header {
+            background-color: rgba(30, 41, 59, 0.95);
+            border-bottom-color: var(--dark-border);
+        }
 
-  .badge {
-    display: inline-block;
-    background: linear-gradient(135deg, #ff6b00, #ff9500);
-    color: #fff;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    padding: 6px 20px;
-    border-radius: 50px;
-    margin-bottom: 24px;
-    animation: fadeDown 0.6s ease both;
-  }
+        .test-title {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
 
-  .hero h1 {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: clamp(2.4rem, 8vw, 4.5rem);
-    font-weight: 700;
-    line-height: 1.1;
-    animation: fadeDown 0.8s ease 0.1s both;
-    margin-bottom: 16px;
-  }
-  .hero h1 span { color: var(--orange); }
+        .topic-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
 
-  .hero p.sub {
-    font-size: 1rem;
-    color: #aaa;
-    max-width: 380px;
-    line-height: 1.7;
-    animation: fadeDown 0.8s ease 0.2s both;
-    margin-bottom: 32px;
-  }
+        .test-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: -0.025em;
+        }
 
-  /* ---- PROFILE CARD ---- */
-  .profile-card {
-    position: relative; z-index:1;
-    background: var(--card);
-    border: 1px solid #222;
-    border-radius: 24px;
-    padding: 32px 24px 28px;
-    max-width: 360px;
-    width: 100%;
-    margin: 0 auto 40px;
-    animation: zoomIn 0.8s ease 0.3s both;
-    box-shadow: 0 0 60px #ff6b0020;
-  }
-  .profile-card::before {
-    content:'';
-    position:absolute; top:0; left:0; right:0; height:4px;
-    background: linear-gradient(90deg, var(--orange), var(--gold), var(--green));
-    border-radius: 24px 24px 0 0;
-  }
+        .header-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
 
-  .profile-img-wrap {
-    width: 120px; height: 120px;
-    border-radius: 50%;
-    border: 4px solid var(--orange);
-    margin: 0 auto 16px;
-    overflow: hidden;
-    box-shadow: 0 0 30px #ff6b0060;
-    animation: pulse-glow 2.5s ease-in-out infinite;
-  }
-  .profile-img-wrap img {
-    width:100%; height:100%; object-fit:cover; object-position:top;
-  }
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-  .profile-name {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 1.6rem;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-  .profile-name span { color: var(--green); }
+        .dark-mode .theme-toggle {
+            color: var(--dark-text);
+        }
 
-  .requirements { margin: 20px 0; text-align: left; }
-  .requirements p { font-size: 0.78rem; color: #888; margin-bottom: 8px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
-  .req-item {
-    display: flex; align-items: center; gap: 10px;
-    background: #1a1a1a;
-    border: 1px solid #2a2a2a;
-    border-radius: 10px;
-    padding: 10px 14px;
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: border-color 0.3s;
-  }
-  .req-item:hover { border-color: var(--orange); }
-  .req-icon { font-size: 1.1rem; }
+        .theme-toggle:hover {
+            background-color: var(--bg);
+        }
 
-  /* ---- ONLY SERIOUS ---- */
-  .serious-banner {
-    position: relative; z-index:1;
-    background: linear-gradient(135deg, #ff6b0015, #ffd70010);
-    border: 1px solid var(--orange);
-    border-radius: 16px;
-    padding: 20px;
-    max-width: 360px;
-    width: 100%;
-    margin: 0 auto 40px;
-    text-align: center;
-    animation: fadeUp 0.8s ease 0.4s both;
-  }
-  .serious-banner h2 { font-size: 1.2rem; font-weight: 700; color: var(--orange); }
-  .serious-banner p { font-size: 0.8rem; color: #aaa; margin-top: 6px; }
+        .dark-mode .theme-toggle:hover {
+            background-color: var(--dark-card);
+        }
 
-  /* ---- MARQUEE ---- */
-  .marquee-wrap {
-    position: relative; z-index:1;
-    overflow: hidden;
-    background: #111;
-    border-top: 1px solid #222; border-bottom: 1px solid #222;
-    padding: 14px 0;
-    margin: 40px 0;
-  }
-  .marquee-track {
-    display: flex; gap: 40px;
-    white-space: nowrap;
-    animation: marquee 30s linear infinite;
-    font-size: 0.85rem;
-    color: #888;
-    font-weight: 600;
-  }
-  .marquee-track span { color: var(--orange); }
+        /* Question Styles */
+        .question-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: var(--card);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            width: 100%;
+        }
 
-  /* ---- RESULTS SECTION ---- */
-  .section {
-    position: relative; z-index:1;
-    padding: 60px 20px 10px;
-    max-width: 420px;
-    margin: 0 auto;
-  }
-  .section-title {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 2rem;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 8px;
-  }
-  .section-title span { color: var(--green); }
-  .section-sub {
-    text-align: center;
-    color: #888;
-    font-size: 0.85rem;
-    margin-bottom: 32px;
-  }
+        .dark-mode .question-container {
+            background-color: var(--dark-card);
+        }
 
-  .result-card {
-    background: var(--card);
-    border: 1px solid #1e1e1e;
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-  .result-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px #00e67620;
-    border-color: var(--green);
-  }
-  .result-card::after {
-    content:'✅ VERIFIED';
-    position:absolute; top:12px; right:12px;
-    font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: var(--green);
-    background: #00e67615;
-    padding: 3px 8px;
-    border-radius: 50px;
-    border: 1px solid var(--green);
-  }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
 
-  /* Hidden extra cards */
-  .extra-card { display: none; }
+        .question-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
 
-  .result-header {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 14px;
-  }
-  .result-avatar {
-    width: 50px; height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--orange);
-    background: #1a1a1a;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.4rem;
-    flex-shrink: 0;
-  }
-  .result-meta h4 { font-size: 1rem; font-weight: 700; }
-  .result-meta p { font-size: 0.75rem; color: #888; }
+        .question-timer {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
 
-  .result-ss {
-    width: 100%; border-radius: 12px;
-    border: 1px solid #2a2a2a;
-    margin-top: 8px;
-    object-fit: cover;
-    max-height: 220px;
-    display: block;
-  }
+        .question-number {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
 
-  .earning-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: linear-gradient(135deg, #00e67620, #00e67610);
-    border: 1px solid var(--green);
-    color: var(--green);
-    font-size: 1.05rem;
-    font-weight: 700;
-    padding: 6px 14px;
-    border-radius: 10px;
-    margin-top: 10px;
-  }
+        .question-text {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            color: var(--text);
+        }
 
-  /* ---- VIEW MORE ---- */
-  .view-more-wrap {
-    position: relative; z-index:1;
-    text-align: center;
-    padding: 10px 20px 40px;
-    max-width: 420px;
-    margin: 0 auto;
-  }
-  .view-more-btn {
-    display: inline-flex; align-items: center; gap: 10px;
-    background: transparent;
-    border: 2px solid var(--orange);
-    color: var(--orange);
-    font-size: 0.95rem;
-    font-weight: 700;
-    padding: 14px 34px;
-    border-radius: 50px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background 0.3s, color 0.3s, transform 0.2s, box-shadow 0.3s;
-    animation: pulse-border 2s ease-in-out infinite;
-  }
-  .view-more-btn:hover {
-    background: var(--orange);
-    color: #fff;
-    transform: scale(1.04);
-    box-shadow: 0 8px 30px #ff6b0050;
-    animation: none;
-  }
+        .dark-mode .question-text {
+            color: var(--dark-text);
+        }
 
-  @keyframes pulse-border {
-    0%,100% { box-shadow: 0 0 0 0 #ff6b0040; }
-    50%      { box-shadow: 0 0 0 8px #ff6b0000; }
-  }
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
 
-  /* ---- NO EXPERIENCE ---- */
-  .no-exp {
-    position: relative; z-index:1;
-    text-align: center;
-    padding: 0 20px 60px;
-  }
-  .no-exp h2 {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--gold);
-    text-shadow: 0 0 30px #ffd70060;
-  }
-  .no-exp p { color: #888; font-size: 0.9rem; margin-top: 8px; }
+        .option {
+            padding: 1.25rem;
+            border: 2px solid var(--border);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            user-select: none;
+        }
 
-  /* ---- CTA BUTTON ---- */
-  .cta-wrap {
-    position: relative; z-index:1;
-    text-align: center;
-    padding: 0 20px 60px;
-  }
-  .cta-btn {
-    display: inline-flex; align-items: center; gap: 12px;
-    background: linear-gradient(135deg, #25D366, #128C7E);
-    color: #fff;
-    font-size: 1.1rem;
-    font-weight: 700;
-    padding: 18px 36px;
-    border-radius: 60px;
-    text-decoration: none;
-    box-shadow: 0 8px 40px #25D36650;
-    animation: pulse-btn 2s ease-in-out infinite;
-    transition: transform 0.2s;
-    max-width: 340px;
-    width: 100%;
-    justify-content: center;
-  }
-  .cta-btn:hover { transform: scale(1.03); }
-  .cta-btn svg { width:24px; height:24px; fill:#fff; flex-shrink:0; }
+        .dark-mode .option {
+            border-color: var(--dark-border);
+            color: var(--dark-text);
+        }
 
-  /* ---- FOOTER ---- */
-  footer {
-    position: relative; z-index:1;
-    text-align: center;
-    padding: 24px;
-    border-top: 1px solid #1a1a1a;
-    color: #555;
-    font-size: 0.75rem;
-  }
+        .option:hover {
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
 
-  /* ---- KEYFRAMES ---- */
-  @keyframes fadeDown {
-    from { opacity:0; transform: translateY(-20px); }
-    to   { opacity:1; transform: translateY(0); }
-  }
-  @keyframes fadeUp {
-    from { opacity:0; transform: translateY(30px); }
-    to   { opacity:1; transform: translateY(0); }
-  }
-  @keyframes zoomIn {
-    from { opacity:0; transform: scale(0.9); }
-    to   { opacity:1; transform: scale(1); }
-  }
-  @keyframes pulse-glow {
-    0%,100% { box-shadow: 0 0 20px #ff6b0060; }
-    50%      { box-shadow: 0 0 40px #ff6b00aa; }
-  }
-  @keyframes pulse-btn {
-    0%,100% { box-shadow: 0 8px 40px #25D36650; }
-    50%      { box-shadow: 0 8px 60px #25D36690; }
-  }
-  @keyframes marquee {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
-  }
+        .option.selected {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
 
-  /* scroll reveal */
-  .reveal { opacity:0; transform: translateY(40px); transition: opacity 0.6s ease, transform 0.6s ease; }
-  .reveal.visible { opacity:1; transform: translateY(0); }
-</style>
+        .option-marker {
+            width: 28px;
+            height: 28px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            flex-shrink: 0;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        .dark-mode .option-marker {
+            border-color: var(--dark-border);
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+        }
+
+        .option.selected .option-marker {
+            background-color: white;
+            color: var(--primary);
+            border-color: white;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .dark-mode .navigation-buttons {
+            border-top-color: var(--dark-border);
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 0.75rem;
+            background-color: var(--primary);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            min-width: 100px;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn:disabled {
+            background-color: var(--text-light);
+            cursor: not-allowed;
+            transform: none;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .navigation-buttons {
+                padding: 1rem 0;
+                gap: 0.5rem;
+            }
+
+            .nav-btn {
+                padding: 0.5rem 0.75rem;
+                min-width: auto;
+                font-size: 0.75rem;
+                flex: 1 1 calc(50% - 0.5rem);
+            }
+
+            .nav-btn i {
+                font-size: 0.75rem;
+            }
+
+            .nav-btn:first-child,
+            .nav-btn:last-child {
+                flex: 1 1 100%;
+                order: -1;
+            }
+        }
+
+        /* Timer styles */
+        .timer-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .timer-warning {
+            background: var(--warning) !important;
+        }
+
+        .timer-danger {
+            background: var(--danger) !important;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0.7; }
+        }
+
+        .dark-mode .timer-container {
+            color: var(--dark-text);
+        }
+
+        /* Progress bar */
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background-color: var(--border);
+            position: fixed;
+            top: 60px;
+            left: 0;
+            z-index: 99;
+        }
+
+        .dark-mode .progress-container {
+            background-color: var(--dark-border);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Results Analysis Styles */
+        .results-container {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: flex-start;
+            z-index: 2000;
+            padding: 2rem;
+            backdrop-filter: blur(8px);
+            overflow-y: auto;
+        }
+
+        .results-card {
+            position: relative;
+            background: var(--card);
+            border-radius: 1.5rem;
+            padding: 3rem;
+            max-width: 1000px;
+            width: 100%;
+            margin: 2rem auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            border: 1px solid var(--border);
+        }
+
+        .dark-mode .results-card {
+            background: var(--dark-card);
+            border-color: var(--dark-border);
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+            position: relative;
+        }
+
+        .results-header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        .results-header h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .stat-card {
+            background: var(--bg);
+            padding: 2rem;
+            border-radius: 1.25rem;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .dark-mode .stat-card {
+            background: var(--dark-card);
+            border-color: var(--dark-border);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            line-height: 1;
+            font-feature-settings: "tnum";
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .question-review {
+            margin-top: 3rem;
+        }
+
+        .question-review-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .question-review-header h3 {
+            font-size: 1.25rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .dark-mode .question-review-header h3 {
+            color: var(--dark-text);
+        }
+
+        .review-item {
+            background: var(--card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            transition: transform 0.2s ease;
+        }
+
+        .review-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .dark-mode .review-item {
+            background: var(--dark-card);
+            border-color: var(--dark-border);
+        }
+
+        .review-item.correct {
+            border-left: 4px solid var(--success);
+        }
+
+        .review-item.incorrect {
+            border-left: 4px solid var(--danger);
+        }
+
+        .review-item.unattempted {
+            border-left: 4px solid var(--text-light);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .review-header h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .dark-mode .review-header h4 {
+            color: var(--dark-text);
+        }
+
+        .review-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .review-status.correct {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+        }
+
+        .review-status.incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .review-status.unattempted {
+            background: rgba(100, 116, 139, 0.1);
+            color: var(--text-light);
+        }
+
+        .close-results {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: var(--primary);
+            border: none;
+            color: white;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.75rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 3000;
+        }
+
+        .close-results:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+
+        .dark-mode .close-results {
+            background: var(--primary-dark);
+        }
+
+        @media (max-width: 768px) {
+            * {
+                font-size: 14px;
+            }
+
+            .container {
+                padding: 0.5rem;
+            }
+
+            .question-container {
+                padding: 1rem;
+                border-radius: 0.75rem;
+                margin-bottom: 80px;
+            }
+
+            .option {
+                padding: 0.875rem;
+            }
+
+            .navigation-buttons {
+                padding: 1rem 0;
+                gap: 0.5rem;
+            }
+
+            .nav-btn {
+                padding: 0.75rem 1rem;
+                min-width: auto;
+                font-size: 0.875rem;
+            }
+
+            .timer-container {
+                bottom: 20px;
+                right: 50%;
+                transform: translateX(50%);
+                font-size: 0.875rem;
+                padding: 0.5rem 1rem;
+            }
+
+            .test-header {
+                padding: 0.75rem 1rem;
+            }
+
+            .test-title {
+                font-size: 1rem;
+            }
+
+            .question-text {
+                font-size: 0.95rem;
+            }
+
+            .option-text {
+                font-size: 0.9rem;
+            }
+
+            .option-marker {
+                width: 24px;
+                height: 24px;
+                font-size: 0.8rem;
+            }
+
+            .results-card {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .review-item {
+                padding: 1rem;
+            }
+        }
+
+        /* Question palette styles */
+        .question-palette {
+            position: fixed;
+            right: 20px;
+            top: 80px;
+            background: var(--card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            max-width: 300px;
+            display: none;
+            z-index: 50;
+        }
+
+        .palette-status-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            font-size: 0.875rem;
+        }
+
+        .status-item .count {
+            font-weight: 600;
+            color: var(--primary);
+            min-width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card);
+            border-radius: 50%;
+        }
+
+        .status-item.answered {
+            border-left: 3px solid var(--success);
+        }
+
+        .status-item.not-answered {
+            border-left: 3px solid var(--danger);
+        }
+
+        .status-item.review {
+            border-left: 3px solid var(--warning);
+        }
+
+        .status-item.bookmarked {
+            border-left: 3px solid var(--primary);
+        }
+
+        .dark-mode .status-item {
+            background: var(--dark-card);
+            border-color: var(--dark-border);
+        }
+
+        .dark-mode .status-item .count {
+            background: var(--dark-bg);
+            color: var(--dark-text);
+        }
+
+        @media (max-width: 768px) {
+            .palette-status-summary {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .status-item {
+                padding: 0.375rem;
+                font-size: 0.75rem;
+            }
+
+            .status-item .count {
+                min-width: 20px;
+                height: 20px;
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .question-palette {
+                display: block;
+            }
+
+            .container {
+                margin-right: 320px;
+            }
+        }
+
+        .dark-mode .question-palette {
+            background: var(--dark-card);
+            border-color: var(--dark-border);
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .palette-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .dark-mode .palette-item {
+            border-color: var(--dark-border);
+        }
+
+        .palette-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .palette-item.answered {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .palette-item.bookmarked {
+            background: #9333ea;
+            color: white;
+            border-color: #9333ea;
+        }
+
+        .palette-item.current {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .palette-item.review {
+            background: var(--warning);
+            color: white;
+            border-color: var(--warning);
+        }
+
+        .palette-item.answered.review {
+            background: linear-gradient(135deg, var(--success) 50%, var(--warning) 50%);
+            color: white;
+            border-color: var(--warning);
+        }
+        .palette-item.answered.bookmarked {
+            background: linear-gradient(135deg, var(--success) 50%, #9333ea 50%);
+            color: white;
+            border-color: #9333ea;
+        }
+
+        .palette-item.bookmarked.review {
+            background: linear-gradient(135deg, #9333ea 50%, var(--warning) 50%);
+            color: white;
+            border-color: var(--warning);
+        }
+
+        .palette-item.answered.bookmarked.review {
+            background: linear-gradient(135deg, var(--success) 33%, #9333ea 33%, #9333ea 66%, var(--warning) 66%);
+            color: white;
+            border-color: var(--warning);
+        }
+
+        @media (max-width: 768px) {
+            .question-palette {
+                position: fixed;
+                top: auto;
+                bottom: 80px;
+                left: 0;
+                right: 0;
+                max-width: 100%;
+                margin: 0 12px;
+                padding: 0.75rem;
+                display: none;
+                z-index: 49;
+                border-radius: 0.75rem;
+            }
+
+            .palette-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+                gap: 0.35rem;
+            }
+
+            .palette-item {
+                width: 100%;
+                height: 32px;
+                font-size: 0.75rem;
+                border-radius: 0.375rem;
+                border-width: 1px;
+            }
+
+            .palette-toggle {
+                position: fixed;
+                bottom: 16px;
+                left: 16px;
+                padding: 0.4rem;
+                border-radius: 0.375rem;
+                width: 36px;
+                height: 36px;
+            }
+
+            .palette-toggle i {
+                font-size: 1.1rem;
+            }
+
+            .question-palette h3 {
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .palette-legend {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                margin-bottom: 0.5rem;
+                font-size: 0.7rem;
+            }
+
+            .legend-item {
+                display: flex;
+                align-items: center;
+                gap: 0.25rem;
+            }
+
+            .legend-color {
+                width: 12px;
+                height: 12px;
+                border-radius: 3px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .bookmark-btn, 
+            .review-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+                padding: 0.35rem;
+            }
+
+            .bookmark-indicator {
+                font-size: 1rem;
+            }
+        }
+
+        .bookmark-btn {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dark-mode .bookmark-btn {
+            color: var(--dark-text);
+        }
+
+        .bookmark-btn:hover {
+            background-color: var(--bg);
+        }
+
+        .dark-mode .bookmark-btn:hover {
+            background-color: var(--dark-card);
+        }
+
+        .bookmark-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .dark-mode .bookmark-btn.active {
+            background-color: var(--primary-dark);
+        }
+
+        .bookmark-indicator {
+            color: var(--warning);
+            font-size: 1.125rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-right: 1rem;
+        }
+
+        .user-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .telegram-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: color 0.2s;
+        }
+
+        .telegram-link:hover {
+            color: var(--primary);
+        }
+
+        .dark-mode .user-name {
+            color: var(--dark-text);
+        }
+
+        .dark-mode .telegram-link {
+            color: var(--dark-text-light);
+        }
+
+        .dark-mode .telegram-link:hover {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .user-info {
+                display: none;
+            }
+        }
+
+        .results-filter {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            background: var(--bg);
+            color: var(--text);
+            border-radius: 2rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .filter-btn i {
+            font-size: 0.9rem;
+            width: 1em;
+            text-align: center;
+        }
+
+        .dark-mode .filter-btn {
+            background: var(--dark-card);
+            border-color: var(--dark-border);
+            color: var(--dark-text);
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .filter-btn.active i {
+            color: white;
+        }
+        .filter-btn[onclick*="correct"] {
+            border-color: var(--success);
+        }
+
+        .filter-btn[onclick*="correct"] i {
+            color: var(--success);
+        }
+
+        .filter-btn[onclick*="incorrect"] {
+            border-color: var(--danger);
+        }
+
+        .filter-btn[onclick*="incorrect"] i {
+            color: var(--danger);
+        }
+
+        .filter-btn[onclick*="unattempted"] {
+            border-color: var(--text-light);
+        }
+
+        .filter-btn[onclick*="unattempted"] i {
+            color: var(--text-light);
+        }
+
+        @media (max-width: 768px) {
+            .results-filter {
+                gap: 0.5rem;
+            }
+
+            .filter-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        .no-items-message {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            background: var(--bg);
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .dark-mode .no-items-message {
+            background: var(--dark-card);
+        }
+
+        .results-filter {
+            position: relative;
+            z-index: 1;
+        }
+
+        .filter-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .filter-btn:active {
+            transform: translateY(1px);
+        }
+
+        @media (max-width: 768px) {
+            .results-filter {
+                padding: 0.5rem;
+                margin: -0.5rem;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+
+            .results-filter::-webkit-scrollbar {
+                display: none;
+            }
+
+            .filter-btn {
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+        }
+    </style>
+    <script>
+    window.MathJax = {
+        tex: { inlineMath: [['\\(', '\\)'], ['$$', '$$']] },
+        svg: { fontCache: 'global' }
+    };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-
-<div class="bg-anim"></div>
-
-<!-- HAMBURGER BUTTON -->
-<button class="nav-btn" id="navBtn" onclick="toggleMenu()">
-  <span></span><span></span><span></span>
-</button>
-
-<!-- OVERLAY -->
-<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
-
-<!-- SIDE MENU -->
-<div class="side-menu" id="sideMenu">
-  <div class="menu-section-label">📞 Contact</div>
-  <a href="https://wa.me/+917050437469" class="menu-item wa" target="_blank">
-    <span class="menu-icon">💬</span> Contact Us
-  </a>
-
-  <div class="menu-section-label">🌐 Follow Us</div>
-  <a href="YOUR_INSTAGRAM_LINK_HERE" class="menu-item insta" target="_blank" id="instaLink">
-    <span class="menu-icon">📸</span> Follow on Instagram
-  </a>
-  <a href="YOUR_FACEBOOK_LINK_HERE" class="menu-item fb" target="_blank" id="fbLink">
-    <span class="menu-icon">👍</span> Follow on Facebook
-  </a>
-</div>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="badge">🔥 Limited Seats Available</div>
-  <h1>Want to learn<br><span>Online through Skills?</span></h1>
-  <p class="sub">⬇️👇👇👇⬇️</p>
-
-  <!-- Profile Card -->
-  <div class="profile-card">
-    <div class="profile-img-wrap">
-      <img src="https://i.ibb.co/RkY1yc8d/IMG-20260328-WA0011.jpg" alt="Shivam Kushwaha">
+    <div class="progress-container">
+        <div id="progressBar" class="progress-bar"></div>
     </div>
-    <div class="profile-name">My Self <span>Shivam Kushwaha</span> ✅</div>
-    <p style="font-size:0.85rem;color:#888;margin-bottom:8px;">I am ready to Guide you!</p>
-    <div class="requirements">
-      <p>✅ To learn skills, you must have these 3 things:</p>
-      <div class="req-item"><span class="req-icon">🎂</span> 1. 15+ Age</div>
-      <div class="req-item"><span class="req-icon">📱</span> 2. Mobile Phone</div>
-      <div class="req-item"><span class="req-icon">🧠</span> 3. Good Mindset</div>
+
+    <div class="test-header">
+        <div class="test-title">
+            <div class="topic-name">MOCK TEST</div>
+            <div class="test-name"> QUESTION-47, MARKS-47, TIME-30</div>
+        </div>
+        <div class="header-controls">
+            <div class="user-info">
+                <img src="https://envs.sh/E7.jpg" alt="Megatron Logo" class="user-logo">
+                <div class="user-details">
+                    <div class="user-name">『 𝗠ᴇɢᴀᴛʀᴏɴ 🧑‍💻 』</div>
+                    <a href="https://t.me/megatron2466" class="telegram-link" target="_blank">
+                        <i class="fab fa-telegram"></i> @megatron2466
+                    </a>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
     </div>
-  </div>
 
-  <div class="serious-banner">
-    <h2>⚠️ Only Serious Person Required ✅</h2>
-    <p>❤️.</p>
-  </div>
-</section>
-
-<!-- MARQUEE — All 5 students -->
-<div class="marquee-wrap">
-  <div class="marquee-track">
-    <span>🔥 Aditya Kumar</span> ne ₹11,100 kamaye &nbsp;|&nbsp;
-    <span>✅ Riya Tripathi</span> ka Monthly Income ₹42,000 &nbsp;|&nbsp;
-    <span>💰 Aman</span> ne ₹67,166 kamaye &nbsp;|&nbsp;
-    <span>🌟 Surya</span> ne ≈₹71,000 kamaye &nbsp;|&nbsp;
-    <span>🚀 Subham</span> ne ₹76,800 kamaye &nbsp;|&nbsp;
-    <span>💎 Real Results</span> Real Students Real Earning &nbsp;|&nbsp;
-    <span>🔥 Aditya Kumar</span> ne ₹11,100 kamaye &nbsp;|&nbsp;
-    <span>✅ Riya Tripathi</span> ka Monthly Income ₹42,000 &nbsp;|&nbsp;
-    <span>💰 Aman</span> ne ₹67,166 kamaye &nbsp;|&nbsp;
-    <span>🌟 Surya</span> ne ≈₹71,000 kamaye &nbsp;|&nbsp;
-    <span>🚀 Subham</span> ne ₹76,800 kamaye &nbsp;|&nbsp;
-    <span>💎 Real Results</span> Real Students Real Earning &nbsp;|&nbsp;
-  </div>
-</div>
-
-<!-- RESULTS -->
-<section class="section">
-  <div class="section-title">Students ke <span>Results</span></div>
-  <div class="section-sub">In logon ne khud try karke results nikale — koi experience nahi tha</div>
-
-  <!-- Card 1: Aditya -->
-  <div class="result-card reveal">
-    <div class="result-header">
-      <div class="result-avatar">🧑</div>
-      <div class="result-meta">
-        <h4>Aditya Kumar</h4>
-        <p>Master Package Member</p>
-      </div>
+    <div class="timer-container">
+        <i class="fas fa-clock"></i>
+        <span id="timer">00:00:00</span>
     </div>
-    <img src="https://i.ibb.co/WW4CWtVq/IMG-20260328-WA0024.jpg" alt="Aditya Screenshot" class="result-ss">
-    <div class="earning-badge">💰 ₹11,100 Earn Kiya</div>
-  </div>
 
-  <!-- Card 2: Riya -->
-  <div class="result-card reveal">
-    <div class="result-header">
-      <div class="result-avatar">👩</div>
-      <div class="result-meta">
-        <h4>Riya Tripathi</h4>
-        <p>Regular Member</p>
-      </div>
+    <div class="results-container" id="resultsContainer">
+        <button class="close-results" onclick="closeResults()">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="results-card">
+            <div class="results-header">
+                <h2>Test Results</h2>
+            </div>
+            <div class="results-stats" id="resultsStats">
+                <!-- Stats will be populated here -->
+            </div>
+            <div class="question-review" id="questionReview">
+                <!-- Question review will be populated here -->
+            </div>
+        </div>
     </div>
-    <img src="https://i.ibb.co/tpY4Qgbr/IMG-20260328-WA0014.jpg" alt="Riya Screenshot" class="result-ss">
-    <div class="earning-badge">💰 ₹42,000 Monthly Income</div>
-  </div>
 
-  <!-- Card 3: Aman (hidden) -->
-  <div class="result-card extra-card reveal">
-    <div class="result-header">
-      <div class="result-avatar">🧑</div>
-      <div class="result-meta">
-        <h4>Aman</h4>
-        <p>Premium Member</p>
-      </div>
+    <div class="container">
+        <div id="questionContainer" class="question-container">
+            <!-- Questions will be loaded here -->
+        </div>
     </div>
-    <img src="https://i.ibb.co/jqJw8Fh/IMG-20260328-WA0020.jpg" alt="Aman Screenshot" class="result-ss">
-    <div class="earning-badge">💰 ₹67,166 Earn Kiya</div>
-  </div>
 
-  <!-- Card 4: Surya (hidden) -->
-  <div class="result-card extra-card reveal">
-    <div class="result-header">
-      <div class="result-avatar">☀️</div>
-      <div class="result-meta">
-        <h4>Surya</h4>
-        <p>Premium Member</p>
-      </div>
+    <div class="question-palette" id="questionPalette">
+        <div class="palette-status-summary">
+            <div class="status-item answered">
+                <span class="count" id="answeredCount">0</span>
+                <span>Answered</span>
+            </div>
+            <div class="status-item not-answered">
+                <span class="count" id="notAnsweredCount">0</span>
+                <span>Not Answered</span>
+            </div>
+            <div class="status-item review">
+                <span class="count" id="reviewCount">0</span>
+                <span>For Review</span>
+            </div>
+            <div class="status-item bookmarked">
+                <span class="count" id="bookmarkedCount">0</span>
+                <span>Bookmarked</span>
+            </div>
+        </div>
+        <h3>Question Palette</h3>
+        <div class="palette-grid" id="paletteGrid"></div>
     </div>
-    <img src="https://i.ibb.co/p61rBhvV/IMG-20260328-WA0023.jpg" alt="Surya Screenshot" class="result-ss">
-    <div class="earning-badge">💰 ≈₹71,000 Earn Kiya</div>
-  </div>
 
-  <!-- Card 5: Subham (hidden) -->
-  <div class="result-card extra-card reveal">
-    <div class="result-header">
-      <div class="result-avatar">🙋</div>
-      <div class="result-meta">
-        <h4>Subham</h4>
-        <p>Premium Member</p>
-      </div>
-    </div>
-    <img src="https://i.ibb.co/39nztwQ3/IMG-20260328-WA0017.jpg" alt="Subham Screenshot" class="result-ss">
-    <div class="earning-badge">💰 ₹76,800 Earn Kiya</div>
-  </div>
-</section>
+    <button class="palette-toggle" onclick="togglePalette()" title="Toggle question palette">
+        <i class="fas fa-th"></i>
+    </button>
 
-<!-- VIEW MORE BUTTON -->
-<div class="view-more-wrap reveal">
-  <a href="https://drive.google.com/file/d/178TFiDktJ7_4ZW8dDIK8qe4V4mN15Em4/view?usp=drivesdk"
-     class="view-more-btn" id="viewMoreBtn" target="_blank">
-    📂 View More Results &rarr;
-  </a>
-</div>
+    <script>
+        // Test configuration
+        const TOTAL_TIME_MINUTES = 30;
+        const MAX_MARKS = 47;
+        const NEGATIVE_MARKING_FACTOR = 0.25; // 1/4th negative marking
+        
+        // Questions data
+        const questions = [{"id":"92410","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">'पानी' शब्द कौन संज्ञा है ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">द्रव्यवाचक</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"2","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92411","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">'गिरोह' शब्द कौन संज्ञा है?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">द्रव्यवाचक</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">समूहवाचक</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"3","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92412","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">'अक्टूबर' शब्द कौन संज्ञा है?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">समूहवाचक</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"4","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92413","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">'सिपाही विद्रोह' शब्द कौन संज्ञा है?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">समूहवाचक</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">द्रव्यवाचक</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"1","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92414","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">वस्तुओं के नाम को क्या कहते हैं ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">संज्ञा</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">सर्वनाम</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">क्रिया</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">वचन</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"1","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92415","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">नाप-तौल का बोध कराने वाले शब्द को क्या कहते हैं ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक संज्ञा</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">द्रव्यवाचक संज्ञा</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक संज्ञा</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक संज्ञा</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"2","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92416","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">निम्न में से द्रव्यवाचक संज्ञा नहीं है-</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">सोना</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">चाँदी</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">तेल</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">आय</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"4","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92417","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">निम्न में समूहवाचक संज्ञा है-</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">सभा</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">मानवता</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">आदमी</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">चावल</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"1","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92418","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जिस संज्ञा से एक ही तरह के वस्तु का बोध होता है, उसे कहते हैं-</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक संज्ञा</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक संज्ञा</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">समूहवाचक संज्ञा</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक संज्ञा</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"4","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92419","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">'कलम' शब्द कौन संज्ञा है ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">समूहवाचक</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"1","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92420","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">निम्न में भाववाचक संज्ञा कौन है ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">बुढ़ापा</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">पहाड़</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">नदी</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">राम</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"1","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92421","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">'सुरेश' कौन संज्ञा है ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">समूहवाचक</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"1","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92422","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">'तूफान' शब्द कौन संज्ञा है ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">द्रव्यवाचक</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">समूहवाचक</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"2","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92423","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक संज्ञा है-</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">यमुना</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">गाय</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">पहाड़</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">आम</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"1","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92424","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक संज्ञा है -</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">दुःख </span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">सेना </span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">लड़का</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">श्याम</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"3","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92425","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">निम्नलिखित शब्दों में जातिवाचक संज्ञा नहीं है-</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">कौआ</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">बाजार</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">समोसा</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">श्याम</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"4","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92426","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">अर्थ के विचार से संज्ञा के कितने प्रकार है ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">चार</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">पाँच</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">छह</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">सात</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"2","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92427","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">निम्नलिखित में से कौन-सा शब्द जातिवाचक संज्ञा है?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">शहर</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">साकेत</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">दिल्ली</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">नीलम</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"1","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92428","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">'स्त्रीत्व' शब्द में कौन-सी संज्ञा है ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक संज्ञा</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक संज्ञा</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक संज्ञा</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">द्रव्यवाचक संज्ञा</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"3","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92429","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">'राम और श्याम में मित्रता है।' इस वाक्य में (मित्रता) कौन-सी संज्ञा है?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक संज्ञा</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक संज्ञा</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक संज्ञा</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">समूहवाचक संज्ञा</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"3","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92430","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">निम्न में कौन व्यक्तिवाचक संज्ञा नहीं है ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">रवि</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">हिमालय</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">गंगा</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">आदमी</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"4","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92431","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक संज्ञा बनाइए ('लड़का ') -</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">लड़कापन</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">लड़काई</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">लड़कपन</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">लड़काईपन</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"3","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92432","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">वृद्ध का भाववाचक होगा-</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">वृद्धा</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">वृद्धित्व</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">वर्धा</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">वार्धक्य</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"4","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92433","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक संज्ञा का उदाहरण है :</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">सर्दी</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">लड़की</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">बहन</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">घड़ी</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"4","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92434","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">'लघु' शब्द से भाववाचक संज्ञा बनाए-</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">लघुता</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">लाघव</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">लघुत्व</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">लावघ</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"2","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92435","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">निम्न में से कौन व्यक्तिवाचक संज्ञा है?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">गाय</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">पहाड़</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">यमुना</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">आम</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"3","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92436","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">'मित्र' शब्द का भाववाचक संज्ञा रूप है:</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">मैत्री</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">मित्रता</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">मित्रत्व</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">मित्री</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"3","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92437","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">कौन-सा शब्द जातिवाचक संज्ञा नहीं है ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जवान</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">बालक</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">सुन्दर</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">मनुष्य</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"3","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92438","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जयचंद कौन सी संज्ञा है?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">समूहवाचक</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"2","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92439","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">'कृष्ण' कौन-सी संज्ञा है?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक संज्ञा</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक संज्ञा</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक संज्ञा</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">समूहवाचक संज्ञा</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"2","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92440","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">नेताजी भाषण दे चुके हैं। नेताजी किस संज्ञा का उदाहरण है ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">समूहवाचक</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"1","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92441","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">आजकल भारतीय पहनावे बदल गए हैं। इस वाक्य में पहनावे कौनसी संज्ञा है ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">समूहवाचक</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"1","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92442","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">कौन-सा शब्द भाववाचक संज्ञा नहीं है ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">मिठाई</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">चतुराई</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">लड़ाई</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">उतराई</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"1","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92443","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">'टिकना' शब्द का भाववाचक होगा-</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">टिकाऊ</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">टिकावट</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">टिकाव</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">टिकनाई</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"1","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92444","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">मैदान में सभा हो रही है। यहाँ सभा कौन संज्ञा है ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">समूहवाचक</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"2","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92445","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">इनमें से भाववाचक संज्ञा नहीं है-</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">हिमालय</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जीत</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">गुणी</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">खेल</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"1","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92446","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक संज्ञा बताएँ-</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">लड़का</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">सेना</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">श्याम</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">दुःख</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"1","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92447","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">'सोना' शब्द का भाववाचक होगा-</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">सोना</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">शयन</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">सयन</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">शयण</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"2","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92448","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">निम्नलिखित में भाववाचक संज्ञा कौन-सी है ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">शत्रुता</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">वीर</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">मनुष्य</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">गुरु</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"1","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92449","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">निम्न में से कौन भाववाचक संज्ञा है ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">दूध</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">सभा</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">ताजमहल</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">गरीबी</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"4","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92450","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">'गंगा पवित्र है।' वाक्य में 'गंगा कौन सी संज्ञा है ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">समूहवाचक</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"1","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92451","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">द्रव्यवाचक संज्ञा का उदाहरण है:</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">गुच्छा</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">तेल</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">शहर</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">कक्षा</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"2","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92452","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">निम्नलिखित में संज्ञा का भेद है-</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">पुरुषवाचक</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">संबंधवाचक</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">निजवाचक</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"2","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92453","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">'मिठास' शब्द है-</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक संज्ञा</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक संज्ञा</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक संज्ञा</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">समूहवाचक संज्ञा</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"3","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92454","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक संज्ञा का उदाहरण नहीं है:</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">गाय</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">नदी</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">शहर</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">विवेकानंद</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"4","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92455","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">'बुढ़ापे' कौन-सी संज्ञा है ?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">समूहवाचक</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"3","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"},{"id":"92456","test_series_id":"199","test_id":"1688","question_type":"1","question_ui_type":"1","question":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">'ईमानदारी सर्वोत्तम नीति है।' यहाँ 'ईमानदारी' कौन-सी संज्ञा है?</span></p>","option_1":"<p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">जातिवाचक संज्ञा</span></p>","option_2":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">व्यक्तिवाचक संज्ञा</span></p>","option_3":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">भाववाचक संज्ञा</span></p>","option_4":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\">समूहवाचक संज्ञा</span></p>","option_5":"","option_6":"","option_7":"","option_8":"","option_9":"","option_10":"","option_image_1":"","option_image_2":"","option_image_3":"","option_image_4":"","option_image_5":"","option_image_6":"","option_image_7":"","option_image_8":"","option_image_9":"","option_image_10":"","image_link_1":"","image_link_2":"","image_link_3":"","answer":"3","solution_heading":"Full Solution","solution_text":"<style> *{overflow-wrap: break-word;} </style> <p style=\"margin-top:0pt;margin-bottom:0pt;font-size:15pt\"><span style=\"font-family:'Sanskrit Text'\"> </span></p>","solution_image_1":"","solution_image_2":"","solution_video":"","difficulty_level":"0","topic":"","exam":"","section_id":"205","subject":"","concept":"","report_count":"0","set_no":"0","positive_marks":"1.00","negative_marks":"0.00","sortingparam":"0.00","question_heading":"","directive":"","deleted":"0","image_check":"0"}];
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let bookmarkedQuestions = new Set();
+        let timeLeft;
+        let timerInterval;
+        let reviewedQuestions = new Set();
+        let questionTimers = new Array(questions.length).fill(0); // Track time spent on each question
+        let currentQuestionStartTime; // To track when a question was opened
 
-<!-- NO EXPERIENCE -->
-<div class="no-exp reveal">
-  <h2>🚀 No Experience But You Can Do It!</h2>
-  <p>Humne bahut se aese log banaye hain jo pehle kuch nahi jaante the.</p>
-</div>
+        // Initialize timer
+        function startTimer() {
+            timeLeft = TOTAL_TIME_MINUTES * 60;
+            updateTimer(); // Update immediately
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            // Start the current question timer
+            startQuestionTimer();
+        }
 
-<!-- CTA -->
-<div class="cta-wrap reveal">
-  <a href="https://wa.me/+917050437469" class="cta-btn" target="_blank">
-    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-    </svg>
-    Contact Us on WhatsApp
-  </a>
-  <p style="color:#555;font-size:0.75rem;margin-top:12px;">WhatsApp pe message karo, abhi join karo!</p>
-</div>
+        function startQuestionTimer() {
+            // Record start time for current question
+            currentQuestionStartTime = Date.now();
+            
+            // Initialize display
+            updateQuestionTimerDisplay();
+            
+            // Update the timer display every second
+            if (window.questionTimerInterval) {
+                clearInterval(window.questionTimerInterval);
+            }
+            
+            window.questionTimerInterval = setInterval(() => {
+                updateQuestionTimerDisplay();
+            }, 1000);
+        }
+        
+        function updateQuestionTimerDisplay() {
+            const elapsedSeconds = Math.floor((Date.now() - currentQuestionStartTime) / 1000) + questionTimers[currentQuestionIndex];
+            const minutes = Math.floor(elapsedSeconds / 60);
+            const seconds = elapsedSeconds % 60;
+            
+            const questionTimerElement = document.getElementById('questionTimer');
+            if (questionTimerElement) {
+                questionTimerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
 
-<footer>
-  © 2025 Shivam Kushwaha. All rights reserved.
-</footer>
+        function pauseQuestionTimer() {
+            if (window.questionTimerInterval) {
+                clearInterval(window.questionTimerInterval);
+                
+                // Calculate time spent on this question and store it
+                const timeSpent = Math.floor((Date.now() - currentQuestionStartTime) / 1000);
+                questionTimers[currentQuestionIndex] += timeSpent;
+                
+                currentQuestionStartTime = null; // Reset start time
+            }
+        }
 
-<script>
-// Scroll reveal
-const obs = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.1 });
-document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
+        function updateTimer() {
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                if (window.questionTimerInterval) {
+                    clearInterval(window.questionTimerInterval);
+                }
+                showResults();
+                return;
+            }
+            
+            timeLeft--;
+            const hours = Math.floor(timeLeft / 3600);
+            const minutes = Math.floor((timeLeft % 3600) / 60);
+            const seconds = timeLeft % 60;
+            
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Add warning colors
+            const timerContainer = document.querySelector('.timer-container');
+            timerContainer.classList.remove('timer-warning', 'timer-danger');
+            
+            if (timeLeft <= 300) { // Last 5 minutes
+                timerContainer.classList.add('timer-danger');
+            } else if (timeLeft <= 600) { // Last 10 minutes
+                timerContainer.classList.add('timer-warning');
+            }
+        }
 
-// Hamburger menu
-function toggleMenu() {
-  document.getElementById('navBtn').classList.toggle('open');
-  document.getElementById('sideMenu').classList.toggle('open');
-  document.getElementById('menuOverlay').classList.toggle('open');
-}
+        function calculateScore() {
+            let score = 0;
+            const marksPerQuestion = MAX_MARKS / questions.length;
+            
+            userAnswers.forEach((answer, index) => {
+                if (answer !== null) {
+                    if (answer.toString() === questions[index].answer) {
+                        score += marksPerQuestion;
+                    } else {
+                        score -= marksPerQuestion * NEGATIVE_MARKING_FACTOR;
+                    }
+                }
+            });
+            
+            return Math.max(0, score);
+        }
 
-// View More logic: first click shows remaining 3 cards, second click opens PDF
-let extraShown = false;
-document.getElementById('viewMoreBtn').addEventListener('click', function(e) {
-  if (!extraShown) {
-    e.preventDefault();
-    extraShown = true;
-    document.querySelectorAll('.extra-card').forEach(c => {
-      c.style.display = 'block';
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => c.classList.add('visible'));
-      });
-      obs.observe(c);
-    });
-    this.innerHTML = '📄 View Full PDF Results &rarr;';
-  }
-  // second click opens PDF naturally via href
-});
-</script>
+        function showResults() {
+            // Pause the current question timer when showing results
+            pauseQuestionTimer();
+            clearInterval(timerInterval);
+            if (window.questionTimerInterval) {
+                clearInterval(window.questionTimerInterval);
+            }
+            
+            const resultsContainer = document.getElementById('resultsContainer');
+            
+            // Calculate stats
+            let correct = 0;
+            let incorrect = 0;
+            let unattempted = 0;
+            let bookmarked = bookmarkedQuestions.size;
+            
+            userAnswers.forEach((answer, index) => {
+                if (answer === null) {
+                    unattempted++;
+                } else if (answer.toString() === questions[index].answer) {
+                    correct++;
+                } else {
+                    incorrect++;
+                }
+            });
+            
+            const finalScore = calculateScore();
+            const accuracy = correct > 0 ? ((correct / (correct + incorrect)) * 100).toFixed(1) : 0;
+            const attempted = correct + incorrect;
+            const attemptRate = ((attempted / questions.length) * 100).toFixed(1);
+            
+            // Update stats
+            const statsContainer = document.getElementById('resultsStats');
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${finalScore.toFixed(2)}</div>
+                    <div class="stat-label"><i class="fas fa-star"></i> Total Score</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${accuracy}%</div>
+                    <div class="stat-label"><i class="fas fa-bullseye"></i> Accuracy</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${correct}</div>
+                    <div class="stat-label"><i class="fas fa-check-circle"></i> Correct</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${incorrect}</div>
+                    <div class="stat-label"><i class="fas fa-times-circle"></i> Incorrect</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${attemptRate}%</div>
+                    <div class="stat-label"><i class="fas fa-tasks"></i> Attempt Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${bookmarked}</div>
+                    <div class="stat-label"><i class="fas fa-bookmark"></i> Bookmarked</div>
+                </div>
+            `;
+            
+            // Display question review with time spent per question
+            const reviewContainer = document.getElementById('questionReview');
+            reviewContainer.innerHTML = `
+                <div class="question-review-header">
+                    <h3>Detailed Analysis</h3>
+                    <div class="results-filter">
+                        <button class="filter-btn active" onclick="filterReviewItems('all')">
+                            <i class="fas fa-list"></i> All Questions
+                        </button>
+                        <button class="filter-btn" onclick="filterReviewItems('correct')">
+                            <i class="fas fa-check"></i> Correct
+                        </button>
+                        <button class="filter-btn" onclick="filterReviewItems('incorrect')">
+                            <i class="fas fa-times"></i> Incorrect
+                        </button>
+                        <button class="filter-btn" onclick="filterReviewItems('unattempted')">
+                            <i class="fas fa-minus"></i> Unattempted
+                        </button>
+                    </div>
+                </div>
+                ${questions.map((q, index) => {
+                    const isCorrect = userAnswers[index]?.toString() === q.answer;
+                    const isBookmarked = bookmarkedQuestions.has(index);
+                    const status = userAnswers[index] === null ? 'unattempted' : 
+                                 isCorrect ? 'correct' : 'incorrect';
+                    
+                    const statusIcon = status === 'correct' ? 'check-circle' :
+                                     status === 'incorrect' ? 'times-circle' : 'minus-circle';
+                    
+                    // Format time spent on question
+                    const timeSpent = questionTimers[index];
+                    const timeMinutes = Math.floor(timeSpent / 60);
+                    const timeSeconds = timeSpent % 60;
+                    
+                    return `
+                        <div class="review-item ${status}" data-status="${status}">
+                            <div class="review-header">
+                                <h4>
+                                    Question ${index + 1}
+                                    ${isBookmarked ? '<i class="fas fa-bookmark" style="color: var(--warning);"></i>' : ''}
+                                    <span style="color: var(--text-light); font-size: 0.875rem;">
+                                        <i class="fas fa-clock"></i>
+                                        ${timeMinutes}:${timeSeconds.toString().padStart(2, '0')}
+                                    </span>
+                                </h4>
+                                <span class="review-status ${status}">
+                                    <i class="fas fa-${statusIcon}"></i>
+                                    ${status.charAt(0).toUpperCase() + status.slice(1)}
+                                </span>
+                                <button class="review-toggle" onclick="toggleReviewContent(this)" title="Expand/Collapse">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="review-content">
+                                <div class="review-question">${q.question}</div>
+                                <div class="review-answer">
+                                    <strong><i class="fas fa-user"></i> Your Answer</strong>
+                                    <div>${userAnswers[index] === null ? 'Not attempted' : q['option_' + userAnswers[index]]}</div>
+                                </div>
+                                <div class="review-correct">
+                                    <strong><i class="fas fa-check"></i> Correct Answer</strong>
+                                    <div>${q['option_' + q.answer]}</div>
+                                </div>
+                                <div class="review-solution">
+                                    <strong><i class="fas fa-lightbulb"></i> ${q.solution_heading || 'Solution'}</strong>
+                                    <div>${q.solution_text || 'No solution provided'}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            `;
+            
+            // Show the results container
+            resultsContainer.style.display = 'flex';
+
+            // ✅ Fix math rendering in options too
+            if (window.MathJax) {
+               MathJax.typesetPromise();
+            }
+        }
+
+        function closeResults() {
+            document.getElementById('resultsContainer').style.display = 'none';
+        }
+
+        function navigateToQuestion(index) {
+            currentQuestionIndex = index;
+            displayQuestion(index);
+        }
+
+        function displayQuestion(index) {
+            const question = questions[index];
+            const container = document.getElementById('questionContainer');
+            
+            container.innerHTML = `
+                <div class="question-header">
+                    <div class="question-info">
+                        <div class="question-number">Question ${index + 1} of ${questions.length}</div>
+                    </div>
+                    <button class="bookmark-btn ${bookmarkedQuestions.has(index) ? 'active' : ''}" onclick="toggleBookmark()" title="Bookmark this question">
+                        <i class="fas fa-bookmark"></i>
+                    </button>
+                </div>
+                <div class="question-text">${question.question}</div>
+                <div class="options-container">
+                    ${[1, 2, 3, 4].map(optionNum => `
+                        <div class="option ${userAnswers[index] === optionNum ? 'selected' : ''}" 
+                             onclick="selectOption(${optionNum})"
+                             role="button"
+                             tabindex="0">
+                            <div class="option-marker">${String.fromCharCode(64 + optionNum)}</div>
+                            <div class="option-text">${question['option_' + optionNum]}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="navigation-buttons">
+                    <button class="nav-btn" 
+                            onclick="previousQuestion()" 
+                            ${index === 0 ? 'disabled' : ''}>
+                        <i class="fas fa-arrow-left"></i>
+                        Previous
+                    </button>
+                    <button class="nav-btn" onclick="clearSelection()">
+                        <i class="fas fa-eraser"></i>
+                        Mark as Clear
+                    </button>
+                    <button class="nav-btn" onclick="markAsReview()">
+                        <i class="fas fa-flag"></i>
+                        Mark for Review
+                    </button>
+                    ${index === questions.length - 1 ? 
+                        `<button class="nav-btn" onclick="showResults()">
+                            <i class="fas fa-flag-checkered"></i>
+                            Submit Test
+                        </button>` :
+                        `<button class="nav-btn" onclick="nextQuestion()">
+                            Next
+                            <i class="fas fa-arrow-right"></i>
+                        </button>`
+                    }
+                </div>
+            `;
+
+            const progress = ((index + 1) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            updatePalette();
+            
+            // ✅ Fix math rendering in options too
+            if (window.MathJax) {
+               MathJax.typesetPromise();
+			}
+        }
+
+        function selectOption(optionNum) {
+            userAnswers[currentQuestionIndex] = optionNum;
+            displayQuestion(currentQuestionIndex);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion(currentQuestionIndex);
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion(currentQuestionIndex);
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const themeIcon = document.querySelector('.theme-toggle i');
+            if (document.body.classList.contains('dark-mode')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        }
+
+        function togglePalette() {
+            const palette = document.getElementById('questionPalette');
+            if (palette.style.display === 'none' || !palette.style.display) {
+                palette.style.display = 'block';
+            } else {
+                palette.style.display = 'none';
+            }
+        }
+
+        function updatePalette() {
+            const paletteGrid = document.getElementById('paletteGrid');
+            paletteGrid.innerHTML = '';
+            // Initialize counters
+            let answeredCount = 0;
+            let notAnsweredCount = questions.length;
+            let reviewCount = 0;
+            let bookmarkedCount = 0;
+            
+            for (let i = 0; i < questions.length; i++) {
+                const item = document.createElement('div');
+                item.className = 'palette-item';
+                if (i === currentQuestionIndex) item.classList.add('current');
+                if (userAnswers[i] !== null) {
+                    item.classList.add('answered');
+                    answeredCount++;
+                    notAnsweredCount--;
+                }
+                if (bookmarkedQuestions.has(i)) {
+                    item.classList.add('bookmarked');
+                    bookmarkedCount++;
+                }
+                if (reviewedQuestions && reviewedQuestions.has(i)) {
+                    item.classList.add('review');
+                    reviewCount++;
+                }
+                item.textContent = i + 1;
+                item.onclick = () => navigateToQuestion(i);
+                paletteGrid.appendChild(item);
+            }
+            // Update counters in the status summary
+            document.getElementById('answeredCount').textContent = answeredCount;
+            document.getElementById('notAnsweredCount').textContent = notAnsweredCount;
+            document.getElementById('reviewCount').textContent = reviewCount;
+            document.getElementById('bookmarkedCount').textContent = bookmarkedCount;
+        }
+        function toggleBookmark() {
+            if (bookmarkedQuestions.has(currentQuestionIndex)) {
+                bookmarkedQuestions.delete(currentQuestionIndex);
+            } else {
+                bookmarkedQuestions.add(currentQuestionIndex);
+            }
+            displayQuestion(currentQuestionIndex);
+            updatePalette();
+        }
+
+        function clearSelection() {
+            userAnswers[currentQuestionIndex] = null;
+            displayQuestion(currentQuestionIndex);
+            updatePalette();
+        }
+
+        function markAsReview() {
+            if (!reviewedQuestions) {
+                reviewedQuestions = new Set();
+            }
+            
+            if (reviewedQuestions.has(currentQuestionIndex)) {
+                reviewedQuestions.delete(currentQuestionIndex);
+            } else {
+                reviewedQuestions.add(currentQuestionIndex);
+            }
+            
+            displayQuestion(currentQuestionIndex);
+            updatePalette();
+        }
+
+        // Add double-click functionality to uncheck answers
+        document.addEventListener('click', (e) => {
+            const option = e.target.closest('.option');
+            if (option) {
+                if (e.detail === 2) { // Check if it's a double click
+                    clearSelection();
+                }
+            }
+            
+            const palette = document.getElementById('questionPalette');
+            const paletteToggle = document.querySelector('.palette-toggle');
+            
+            if (window.innerWidth <= 768 && 
+                !palette.contains(e.target) && 
+                !paletteToggle.contains(e.target) &&
+                palette.style.display === 'block') {
+                palette.style.display = 'none';
+            }
+        });
+
+        // Initialize
+        startTimer();
+        displayQuestion(0);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Prevent default behavior for arrow keys to avoid scrolling
+            if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+            }
+            
+            // Handle navigation and shortcuts
+            switch (e.key) {
+                case 'ArrowRight':
+                case 'n':
+                    nextQuestion();
+                    break;
+                case 'ArrowLeft':
+                case 'p':
+                    previousQuestion();
+                    break;
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                    selectOption(parseInt(e.key));
+                    break;
+                case 'b':
+                    toggleBookmark();
+                    break;
+                case ' ':
+                    e.preventDefault();
+                    togglePalette();
+                    break;
+            }
+        });
+
+        // Add keyboard shortcut help
+        function showKeyboardShortcuts() {
+            alert(`
+Keyboard Shortcuts:
+- Arrow Right or 'N': Next question
+- Arrow Left or 'P': Previous question
+- 1-4: Select answer option
+- 'B': Bookmark/Unbookmark current question
+- 'Space': Toggle question palette
+            `.trim());
+        }
+
+        function filterReviewItems(status) {
+            // Update active state of filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.onclick.toString().includes(`'${status}'`)) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Show/hide review items based on status
+            const reviewItems = document.querySelectorAll('.review-item');
+            let visibleCount = 0;
+            
+            reviewItems.forEach(item => {
+                if (status === 'all' || item.dataset.status === status) {
+                    item.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Show "no items" message if no items are visible
+            const noItemsMessage = document.getElementById('noItemsMessage') || (() => {
+                const msg = document.createElement('div');
+                msg.id = 'noItemsMessage';
+                msg.className = 'no-items-message';
+                document.querySelector('.question-review').appendChild(msg);
+                return msg;
+            })();
+
+            if (visibleCount === 0) {
+                noItemsMessage.style.display = 'block';
+                noItemsMessage.textContent = `No ${status === 'all' ? '' : status} questions found`;
+            } else {
+                noItemsMessage.style.display = 'none';
+            }
+        }
+
+        // Clean up all intervals when page is unloaded
+        window.addEventListener('beforeunload', () => {
+            clearInterval(timerInterval);
+            if (window.questionTimerInterval) {
+                clearInterval(window.questionTimerInterval);
+            }
+        });
+    </script>
 </body>
 </html>
